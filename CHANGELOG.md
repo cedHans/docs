@@ -6,6 +6,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Fixed
+
+- 🐛(frontend) export interlinks as links in Markdown #2821
+
 ## [v6.0.0] - 2026-10-05
 
 ### Added

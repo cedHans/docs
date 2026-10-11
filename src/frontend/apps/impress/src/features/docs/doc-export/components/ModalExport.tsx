@@ -20,13 +20,20 @@ import { useToast } from '@/hooks';
 import { fallbackLng } from '@/i18n/config';
 
 import ModulesExport from '../hooks/';
-import { downloadFile, getExportFilename } from '../utils';
+import {
+  downloadFile,
+  getExportFilename,
+  resolveInterlinkTitles,
+} from '../utils';
 import {
   addMediaFilesToZip,
   generateHtmlDocument,
   improveHtmlAccessibility,
 } from '../utils_html';
-import { addMediaFilesToMarkdownZip } from '../utils_markdown';
+import {
+  addMediaFilesToMarkdownZip,
+  interlinksToMarkdownLinks,
+} from '../utils_markdown';
 
 const useExportAGPL = ModulesExport?.useExportAGPL;
 
@@ -109,6 +116,12 @@ export const ModalExport = ({ onClose, doc }: ModalExportProps) => {
       if (!blobExport && format === 'markdown') {
         const zip = new JSZip();
         const blocks = structuredClone(editor.document);
+
+        interlinksToMarkdownLinks(
+          blocks,
+          await resolveInterlinkTitles(blocks),
+          window.location.origin,
+        );
 
         const mediaFileCount = await addMediaFilesToMarkdownZip(
           blocks,
