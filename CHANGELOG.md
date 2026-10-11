@@ -6,6 +6,11 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+- ✨(y-provider) turn links to docs into interlinks when importing
+  Markdown #2821
+
 ## [v6.0.0] - 2026-10-05
 
 ### Added

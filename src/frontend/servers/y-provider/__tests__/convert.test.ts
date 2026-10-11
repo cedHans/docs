@@ -464,6 +464,7 @@ describe('Conversion Testing', () => {
             type: 'interlinkingLinkInline' as const,
             props: {
               docId: '00000000-0000-0000-0000-000000000123',
+              blockId: '',
               title: 'Other doc',
               disabled: false,
               trigger: '/' as const,
@@ -564,6 +565,7 @@ describe('Conversion Testing', () => {
             type: 'interlinkingLinkInline' as const,
             props: {
               docId: '00000000-0000-0000-0000-000000000123',
+              blockId: '',
               title: 'Other doc',
               disabled: false,
               trigger: '/' as const,
@@ -607,6 +609,7 @@ describe('Conversion Testing', () => {
             type: 'interlinkingLinkInline' as const,
             props: {
               docId: '00000000-0000-0000-0000-000000000123',
+              blockId: '',
               title: 'Hidden',
               disabled: true,
               trigger: '/' as const,

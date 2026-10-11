@@ -4,6 +4,8 @@ import { COLLABORATION_SERVER_ORIGIN } from '@/env';
 
 const interlinkingPropSchema = {
   docId: { default: '' as string },
+  // Anchored block of the linked doc (matches the frontend schema).
+  blockId: { default: '' as string },
   disabled: {
     default: false as boolean,
     values: [true, false] as const,
@@ -24,7 +26,7 @@ const interlinkingConfig = {
 // The instance origin the docs are served from. COLLABORATION_SERVER_ORIGIN may
 // hold a comma-separated list of allowed origins (see middlewares.ts); the first
 // one is the canonical instance URL.
-const instanceOrigin = COLLABORATION_SERVER_ORIGIN.split(',')[0].replace(
+export const instanceOrigin = COLLABORATION_SERVER_ORIGIN.split(',')[0].replace(
   /\/+$/,
   '',
 );
@@ -32,27 +34,29 @@ const instanceOrigin = COLLABORATION_SERVER_ORIGIN.split(',')[0].replace(
 // Matches the frontend route (LinkSelected.tsx), but exported as an absolute URL
 // so the links resolve outside of the app (Docs-as-CMS, emails, etc.) rather than
 // against whatever host the exported HTML/markdown happens to be served from.
-const interlinkingHref = (docId: string) =>
-  `${instanceOrigin}/docs/${encodeURIComponent(docId)}/`;
+const interlinkingHref = (docId: string, blockId = '') =>
+  `${instanceOrigin}/docs/${encodeURIComponent(docId)}/${
+    blockId ? `#${encodeURIComponent(blockId)}` : ''
+  }`;
 
 export const InterlinkingLinkInline = createInlineContentSpec(
   interlinkingConfig,
   {
     render: (inlineContent) => {
-      const { disabled, docId, title } = inlineContent.props;
+      const { disabled, docId, blockId, title } = inlineContent.props;
       if (disabled || !docId) {
         return { dom: document.createElement('span') };
       }
 
       const dom = document.createElement('a');
       dom.setAttribute('data-inline-content-type', 'interlinkingLinkInline');
-      dom.setAttribute('href', interlinkingHref(docId));
+      dom.setAttribute('href', interlinkingHref(docId, blockId));
       dom.setAttribute('data-doc-id', docId);
       dom.textContent = title || docId;
       return { dom };
     },
     toExternalHTML: (inlineContent) => {
-      const { disabled, docId, title } = inlineContent.props;
+      const { disabled, docId, blockId, title } = inlineContent.props;
       // Matches the frontend (InterlinkingLinkInlineContent.tsx): a disabled
       // or unresolved link must not render any visible content.
       if (disabled || !docId) {
@@ -60,7 +64,7 @@ export const InterlinkingLinkInline = createInlineContentSpec(
       }
 
       const dom = document.createElement('a');
-      dom.setAttribute('href', interlinkingHref(docId));
+      dom.setAttribute('href', interlinkingHref(docId, blockId));
       dom.setAttribute('data-doc-id', docId);
       if (title) {
         dom.setAttribute('title', title);

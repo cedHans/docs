@@ -15,6 +15,7 @@ import {
   DocsStyleSchema,
   docsBlockNoteSchema,
 } from '@/blockSpecs';
+import { linksToInterlinks } from '@/interlinks';
 import { logger } from '@/utils';
 
 interface ErrorResponse {
@@ -96,7 +97,8 @@ const readers: InputReader[] = [
       ContentTypes.XMarkdown,
       ContentTypes.FormUrlEncoded,
     ],
-    read: (data) => editor.tryParseMarkdownToBlocks(data.toString()),
+    read: async (data) =>
+      linksToInterlinks(await editor.tryParseMarkdownToBlocks(data.toString())),
   },
   {
     supportedContentTypes: [ContentTypes.YJS, ContentTypes.OctetStream],
